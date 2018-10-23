@@ -53,9 +53,6 @@ class TwitchWebhook extends EventEmitter {
     if (this._options.lease_seconds === undefined) {
       this._options.lease_seconds = 864000
     }
-    if (this._options.auth === undefined) {
-      this._options.lease_seconds = false
-    }
 
     this._options.listen = options.listen || {}
     this._options.listen.host = options.listen.host || '0.0.0.0'
@@ -161,7 +158,7 @@ class TwitchWebhook extends EventEmitter {
     let requestOptions = {}
     requestOptions.url = this._hubUrl
     
-    if(this._options.auth !== false){
+    if(this._options.auth !== undefined){
       requestOptions.headers = {
         'Client-ID': this._options.client_id,
         'Authorization': 'Bearer ' + this._options.auth
