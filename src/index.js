@@ -19,6 +19,7 @@ class TwitchWebhook extends EventEmitter {
    *
    * @param {Object} options - Options
    * @param {string} options.client_id - Client ID required for Twitch API calls
+   * @param {string} options.auth - Auth token for doing auth requests to Twitch API
    * @param {string} options.callback - URL where notifications
    * will be delivered.
    * @param {string} [options.secret=false] - Secret used to sign
@@ -51,6 +52,9 @@ class TwitchWebhook extends EventEmitter {
 
     if (this._options.lease_seconds === undefined) {
       this._options.lease_seconds = 864000
+    }
+    if (this._options.auth === undefined) {
+      this._options.lease_seconds = false
     }
 
     this._options.listen = options.listen || {}
@@ -156,9 +160,20 @@ class TwitchWebhook extends EventEmitter {
 
     let requestOptions = {}
     requestOptions.url = this._hubUrl
-    requestOptions.headers = {
-      'Client-ID': this._options.client_id
+    
+    if(this._options.auth !== false){
+      requestOptions.headers = {
+        'Client-ID': this._options.client_id,
+        'Authorization': 'Bearer ' + this._options.auth
+        
+      }
+    }else{
+      requestOptions.headers = {
+        'Client-ID': this._options.client_id
+      }
     }
+    
+
     requestOptions.qs = {
       'hub.callback': this._options.callback,
       'hub.mode': mode,
